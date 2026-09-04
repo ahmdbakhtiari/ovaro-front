@@ -29,7 +29,6 @@ export default function Page() {
         {/* Main Title */}
         <h2
           className="
-            mt-6
             text-2xl
             font-extrabold
             leading-[1.6]
@@ -37,7 +36,7 @@ export default function Page() {
 
             sm:mt-7
             sm:text-3xl
-
+            mt-16
             lg:mt-8
             lg:text-4xl
             lg:leading-[1.5]

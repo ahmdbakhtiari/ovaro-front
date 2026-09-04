@@ -86,13 +86,13 @@ export default function Page() {
           <h1
             className="
               m-0
-              text-[18px]
+              text-[30px]
               font-bold
               leading-[1.2]
               tracking-[-0.02em]
               text-[#f2f5fa]
-
-              sm:text-[20px]
+              mb-2
+              sm:text-[40px]
             "
           >
             مخزن مدل‌ها
@@ -103,7 +103,7 @@ export default function Page() {
               mt-1.5
               text-xs
               text-[#61708a]
-
+              mb-8
               sm:text-sm
             "
           >
@@ -147,10 +147,9 @@ export default function Page() {
                   lg:px-[22px]
                   lg:py-5
 
-                  ${
-                    isActive
-                      ? 'border-[#145139]'
-                      : 'border-[#242731]'
+                  ${isActive
+                    ? 'border-[#145139]'
+                    : 'border-[#242731]'
                   }
                 `}
               >
@@ -194,10 +193,9 @@ export default function Page() {
 
                         sm:text-xs
 
-                        ${
-                          isActive
-                            ? 'bg-[#092c1e] text-[#16d47b]'
-                            : 'bg-[#1e222c] text-[#66748a]'
+                        ${isActive
+                          ? 'bg-[#092c1e] text-[#16d47b]'
+                          : 'bg-[#1e222c] text-[#66748a]'
                         }
                       `}
                     >
