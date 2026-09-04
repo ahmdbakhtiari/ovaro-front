@@ -57,7 +57,7 @@ export default function MainMenu() {
 
                     <div>
                         <h1 className="text-base font-bold tracking-tight text-white">
-                            Alpha Signal
+                            Ovaro Signal
                         </h1>
 
                         <p className="text-[10px] font-medium text-white">
@@ -228,7 +228,7 @@ export default function MainMenu() {
                         <div>
 
                             <h1 className="text-[17px] font-bold tracking-tight text-white">
-                                Alpha Signal
+                                Ovaro Signal
                             </h1>
 
                             <p className="mt-0.5 text-[10px] font-semibold tracking-wide text-white">
