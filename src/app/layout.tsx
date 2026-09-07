@@ -18,6 +18,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`h-full antialiased`}
     >
       <body className="min-h-full flex" dir="rtl">
+        
         <MainMenu />
         <main className='flex-1 p-8 bg-black'>
           {children}
