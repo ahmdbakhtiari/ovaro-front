@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { Send, Paperclip } from "lucide-react";
 import { Spinner, TextArea } from "@heroui/react";
 import { postMessageInChat } from "../actions/action";
 
@@ -14,12 +14,14 @@ type Message = {
 export default function ChatInput() {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    // Auto scroll to bottom
+    // Auto scroll
     useEffect(() => {
         if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTo({
@@ -30,7 +32,7 @@ export default function ChatInput() {
     }, [messages, loading]);
 
     const handleSend = async () => {
-        if (!message.trim()) return;
+        if (!message.trim() && !selectedFile) return;
 
         const userMessage = message;
 
@@ -60,22 +62,47 @@ export default function ChatInput() {
                 role: "assistant",
             },
         ]);
+
+        setSelectedFile(null);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleKeyDown = (
+        e: React.KeyboardEvent<HTMLTextAreaElement>
+    ) => {
         if (e.key === "Enter" && e.ctrlKey) {
             e.preventDefault();
             handleSend();
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLTextAreaElement>
+    ) => {
         setMessage(e.target.value);
 
         const textarea = e.target;
 
         textarea.style.height = "auto";
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
+        textarea.style.height = `${Math.min(
+            textarea.scrollHeight,
+            200
+        )}px`;
+    };
+
+    const handleAttach = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const file = e.target.files?.[0];
+
+        if (!file) return;
+
+        setSelectedFile(file);
+
+        console.log("Attached file:", file);
     };
 
     return (
@@ -85,117 +112,68 @@ export default function ChatInput() {
             flex-col
             gap-6
             px-3
-            sm:gap-8
             sm:px-5
-            md:gap-10
             md:px-6
-            lg:gap-14
         ">
 
-            {/* ================= CHAT MESSAGES ================= */}
+            {/* Messages */}
 
             <div
                 ref={messagesContainerRef}
                 className="
                     chat-scroll
-
                     mx-auto
                     w-full
-
                     max-w-3xl
-
                     max-h-[55vh]
                     min-h-[200px]
-
                     overflow-y-auto
-
                     px-1
                     sm:px-2
                     md:px-3
-
-                    pb-2
                 "
             >
-
-                {/* Empty State */}
 
                 {messages.length < 1 && (
                     <p className="
                         mb-4
                         text-center
-
                         text-2xl
                         font-bold
-
                         leading-relaxed
-
                         text-white
-
                         sm:text-3xl
-
                         md:text-4xl
                     ">
                         Codebase RAG آماده به شروع برای چت کردن
                     </p>
                 )}
 
-                {/* Messages */}
-
-                <div className="
-                    flex
-                    flex-col
-                    gap-3
-
-                    sm:gap-4
-
-                    md:gap-5
-                ">
-
+                <div className="flex flex-col gap-3 sm:gap-4">
                     {messages.map((message) => (
                         message.role === "user" ? (
-
-                            /* ================= USER ================= */
-
                             <div
                                 key={message.id}
-                                className="
-                                    flex
-                                    justify-start
-                                    px-1
-
-                                    sm:px-2
-                                "
+                                className="flex justify-start px-1"
                             >
                                 <div className="
                                     max-w-[90%]
-
                                     rounded-2xl
                                     rounded-br-md
-
                                     bg-blue-600
-
                                     px-4
                                     py-2.5
-
                                     text-white
-
                                     shadow-lg
-
                                     sm:max-w-[80%]
                                     sm:px-5
                                     sm:py-3
-
                                     md:max-w-[75%]
                                 ">
                                     <p className="
                                         break-words
-
                                         text-sm
                                         leading-6
-
-                                        sm:text-sm
-                                        sm:leading-7
-
                                         md:text-base
                                         md:leading-7
                                     ">
@@ -203,54 +181,31 @@ export default function ChatInput() {
                                     </p>
                                 </div>
                             </div>
-
                         ) : (
-
-                            /* ================= ASSISTANT ================= */
-
                             <div
                                 key={message.id}
-                                className="
-                                    flex
-                                    justify-end
-                                    px-1
-
-                                    sm:px-2
-                                "
+                                className="flex justify-end px-1"
                             >
                                 <div className="
                                     max-w-[90%]
-
                                     rounded-2xl
                                     rounded-bl-md
-
                                     border
                                     border-white/10
-
                                     bg-white/[0.06]
-
                                     px-4
                                     py-2.5
-
                                     text-white
-
                                     shadow-lg
-
                                     sm:max-w-[80%]
                                     sm:px-5
                                     sm:py-3
-
                                     md:max-w-[75%]
                                 ">
                                     <p className="
                                         break-words
-
                                         text-sm
                                         leading-6
-
-                                        sm:text-sm
-                                        sm:leading-7
-
                                         md:text-base
                                         md:leading-7
                                     ">
@@ -260,22 +215,14 @@ export default function ChatInput() {
                             </div>
                         )
                     ))}
-
                 </div>
-
-                {/* ================= LOADING ================= */}
 
                 {loading && (
                     <div className="
                         mt-6
                         flex
-                        flex-col
-                        items-center
-                        gap-2
-
+                        justify-center
                         sm:mt-8
-
-                        md:mt-12
                     ">
                         <Spinner
                             color="accent"
@@ -287,110 +234,159 @@ export default function ChatInput() {
             </div>
 
 
-            {/* ================= INPUT ================= */}
+            {/* Selected File */}
+
+            {selectedFile && (
+                <div className="
+                    mx-auto
+                    flex
+                    w-full
+                    max-w-3xl
+                    items-center
+                    justify-between
+                    rounded-xl
+                    border
+                    border-white/10
+                    bg-white/5
+                    px-4
+                    py-2
+                    text-sm
+                    text-white
+                ">
+                    <span className="truncate">
+                        📎 {selectedFile.name}
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() => setSelectedFile(null)}
+                        className="
+                            ml-3
+                            text-white/50
+                            hover:text-white
+                        "
+                    >
+                        ×
+                    </button>
+                </div>
+            )}
+
+
+            {/* Input */}
 
             <div className="
                 mx-auto
-
                 flex
                 w-full
                 max-w-3xl
-
                 items-end
-
                 rounded-2xl
-
                 border
                 border-white/10
-
                 bg-white/10
-
                 px-2
                 py-2
-
                 shadow-lg
                 backdrop-blur-md
-
                 sm:px-3
-
-                md:py-2.5
             ">
+
+                {/* Hidden File Input */}
+
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+
+
+
+
+                {/* TextArea */}
 
                 <TextArea
                     ref={textareaRef}
                     value={message}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
-
                     placeholder="پیامت رو اینجا بنویس..."
-
-
                     className="
-                        flex-1
-
-                        border-none
-
-                        bg-transparent
-
-                        text-sm
-                        text-white
-
-                        placeholder:text-white/40
-
-                        outline-none
-
-                        focus:ring-0
-
-                        resize-none
-
-                        overflow-y-auto
-
-                        sm:text-base
-                    "
+        textarea-scroll
+        flex-1
+        border-none
+        bg-transparent
+        text-sm
+        text-white
+        placeholder:text-white/30
+        outline-none
+        focus:ring-0
+        resize-none
+        overflow-y-auto
+        sm:text-base
+    "
                 />
 
-                <button
-                    onClick={handleSend}
-                    disabled={loading || !message.trim()}
-
-                    className="
-                        ml-2
-
+                <div>
+                    <button
+                        type="button"
+                        onClick={handleAttach}
+                        className="
                         flex
                         h-9
                         w-9
-
                         shrink-0
-
                         items-center
                         justify-center
-
                         rounded-xl
-
-                        bg-white/15
-
-                        text-white
-
-                        cursor-pointer
-
+                        text-white/60
                         transition-all
-
-                        hover:bg-white/25
-
+                        hover:bg-white/10
+                        hover:text-white
                         active:scale-95
-
-                        disabled:cursor-not-allowed
-                        disabled:opacity-40
-
                         sm:h-10
                         sm:w-10
                     "
-                >
-                    <Send
-                        size={18}
-                        className="sm:size-5"
-                    />
-                </button>
+                        title="Attach file"
+                    >
+                        <Paperclip size={19} />
+                    </button>
+
+                    {/* Send */}
+
+                    <button
+                        type="button"
+                        onClick={handleSend}
+                        disabled={loading || (!message.trim() && !selectedFile)}
+                        className="
+                        ml-2
+                        flex
+                        h-9
+                        w-9
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-xl
+                        bg-white/15
+                        text-white
+                        transition-all
+                        hover:bg-white/25
+                        active:scale-95
+                        disabled:cursor-not-allowed
+                        disabled:opacity-40
+                        sm:h-10
+                        sm:w-10
+                    "
+                        title="Send"
+                    >
+                        <Send size={18} />
+                    </button>
+
+
+                    {/* Attach */}
+
+
+                </div>
 
             </div>
 
