@@ -48,7 +48,7 @@ export default function MainMenu() {
 
                     <div>
                         <h1 className="text-base font-bold tracking-tight text-white">
-                            Ovaro Signal
+                            Codebase RAG Signal
                         </h1>
 
                         <p className="text-[10px] font-medium text-white">
@@ -264,7 +264,7 @@ export default function MainMenu() {
             {menuOpen && (
                 <div className="min-w-0">
                     <h1 className="whitespace-nowrap text-[17px] font-bold tracking-tight text-white">
-                        Ovaro Signal
+                        Codebase RAG Signal
                     </h1>
 
                     <p className="mt-0.5 whitespace-nowrap text-[10px] font-semibold tracking-wide text-white">
