@@ -9,24 +9,36 @@ const JSON_HEADERS: HeadersInit = {
 
 
 
-export const postNewCreditDetail = async (data: unknown) => {
+export const postMessageInChat = async (data: unknown) => {
   try {
-    const res = await fetch(UrlMaker('predict'), {
-      method: 'POST',
+    const res = await fetch(UrlMaker("chat/"), {
+      method: "POST",
       headers: JSON_HEADERS,
       body: JSON.stringify(data),
-      cache: 'no-store',
     });
 
+    const body = await res.json();
 
-    return handleFetchResponse(res);
+    if (!res.ok) {
+      return {
+        ok: false,
+        status: res.status,
+        body,
+      };
+    }
+
+    return {
+      ok: true,
+      status: res.status,
+      body,
+    };
   } catch (e) {
     return {
       ok: false,
       status: 500,
       body: {
-        message: 'مشکلی پیش آمده لطفا بعدا مجدد تلاش کنید.',
-        errors: e instanceof Error ? e.message : 'Unknown error',
+        message: "مشکلی پیش آمده لطفا بعدا مجدد تلاش کنید.",
+        errors: e instanceof Error ? e.message : "Unknown error",
       },
     };
   }

@@ -1,4 +1,4 @@
 export function UrlMaker(endPoint: string) {
-    return `https://credi-sense-backend.onrender.com${endPoint}`;
+    return `http://127.0.0.1:8000/api/${endPoint}`;
 }
 
